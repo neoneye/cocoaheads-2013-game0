@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		424C3F6E1857805B007F68CA /* G0Experiment0View.m in Sources */ = {isa = PBXBuildFile; fileRef = 424C3F6D1857805B007F68CA /* G0Experiment0View.m */; };
 		427361BB18577F460068ACBE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 427361BA18577F450068ACBE /* Foundation.framework */; };
 		427361BD18577F460068ACBE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 427361BC18577F460068ACBE /* CoreGraphics.framework */; };
 		427361BF18577F460068ACBE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 427361BE18577F460068ACBE /* UIKit.framework */; };
@@ -35,6 +36,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		424C3F6C1857805B007F68CA /* G0Experiment0View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = G0Experiment0View.h; sourceTree = "<group>"; };
+		424C3F6D1857805B007F68CA /* G0Experiment0View.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = G0Experiment0View.m; sourceTree = "<group>"; };
 		427361B718577F450068ACBE /* Game0.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Game0.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		427361BA18577F450068ACBE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		427361BC18577F460068ACBE /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -122,6 +125,8 @@
 				427361D318577F460068ACBE /* G0ViewController.m */,
 				427361D518577F460068ACBE /* Images.xcassets */,
 				427361C118577F460068ACBE /* Supporting Files */,
+				424C3F6C1857805B007F68CA /* G0Experiment0View.h */,
+				424C3F6D1857805B007F68CA /* G0Experiment0View.m */,
 			);
 			path = Game0;
 			sourceTree = "<group>";
@@ -255,6 +260,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				427361C718577F460068ACBE /* main.m in Sources */,
+				424C3F6E1857805B007F68CA /* G0Experiment0View.m in Sources */,
 				427361CB18577F460068ACBE /* G0AppDelegate.m in Sources */,
 				427361D418577F460068ACBE /* G0ViewController.m in Sources */,
 			);
@@ -475,6 +481,7 @@
 				427361EE18577F460068ACBE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		427361EF18577F460068ACBE /* Build configuration list for PBXNativeTarget "Game0Tests" */ = {
 			isa = XCConfigurationList;
@@ -483,6 +490,7 @@
 				427361F118577F460068ACBE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
