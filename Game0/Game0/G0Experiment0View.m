@@ -21,6 +21,13 @@ float remap(float value, float a, float b, float c, float d) {
 @property (nonatomic) CGFloat lastTouchX;
 @property (nonatomic) CGFloat lastTouchY;
 @property (nonatomic) double lastTouchValidUntilTime;
+@property (nonatomic) double lastTouchReady;
+
+
+@property (nonatomic) CGFloat playerCurrentX;
+@property (nonatomic) CGFloat playerCurrentY;
+@property (nonatomic) CGFloat playerVelocityX;
+@property (nonatomic) CGFloat playerVelocityY;
 
 @property (nonatomic, strong) NSArray *slices;
 
@@ -31,6 +38,11 @@ float remap(float value, float a, float b, float c, float d) {
 - (id)initWithSlices:(NSArray*)slices {
     self = [super init];
     if (self) {
+		self.playerCurrentX = 0;
+		self.playerCurrentY = 0;
+		self.playerVelocityX = 0;
+		self.playerVelocityY = 0;
+		self.lastTouchReady = NO;
 		self.slices = slices;
 		[self installGestures];
     }
@@ -103,19 +115,26 @@ float remap(float value, float a, float b, float c, float d) {
 		self.lastTouchX = x;
 		self.lastTouchY = y;
 		self.lastTouchValidUntilTime = CFAbsoluteTimeGetCurrent() + 0.5;
+		self.lastTouchReady = YES;
 		[self setNeedsDisplay];
 
 	}
+}
+
+- (double)xFactor {
+	return 50;
+}
+
+- (double)yFactor {
+	return CGRectGetHeight(self.bounds) / 3;
 }
 
 - (void)drawSlices {
 	
 	CGRect bounds = self.bounds;
 	CGFloat maxy = CGRectGetMaxY(bounds);
-	CGFloat screenHeight = CGRectGetHeight(bounds);
-//	CGFloat screenWidth = CGRectGetWidth(bounds);
-	double yfactor = screenHeight / 3;
-	double xfactor = 50;
+	double yfactor = [self yFactor];
+	double xfactor = [self xFactor];
 	
 	NSInteger n = self.slices.count;
 	for (NSInteger i = 0; i<n; i++) {
@@ -129,6 +148,34 @@ float remap(float value, float a, float b, float c, float d) {
 	}
 }
 
+-(void)drawPlayer {
+	
+	CGRect bounds = self.bounds;
+	double yfactor = [self yFactor];
+	double xfactor = [self xFactor];
+	CGFloat x = self.playerCurrentX;
+	CGFloat maxy = CGRectGetMaxY(bounds);
+	
+	NSInteger n = self.slices.count;
+	for (NSInteger i = 0; i<n; i++) {
+		if (x < i) continue;
+		if (x > i) continue;
+		G0LevelSlice *slice = [self.slices objectAtIndex:i];
+		
+		CGFloat height = slice.height * yfactor;
+		CGRect r = CGRectMake(i * xfactor, maxy - height, xfactor, height);
+		CGFloat midx = CGRectGetMidX(r);
+		
+		CGFloat yy = CGRectGetMinY(r);
+		
+		CGRect rr = CGRectMake(midx - 5, yy - 5, 10, 10);
+		
+		[[UIColor blackColor] setFill];
+		UIBezierPath *path = [UIBezierPath bezierPathWithRect:rr];
+		[path fill];
+	}
+}
+
 
 - (void)drawRect:(CGRect)rect {
 	{
@@ -138,9 +185,19 @@ float remap(float value, float a, float b, float c, float d) {
 	}
 	
 	[self drawSlices];
+	[self drawPlayer];
 
 	
 	double t = CFAbsoluteTimeGetCurrent();
+	
+	if (self.lastTouchReady) {
+		
+//		self.playerVelocityX = 0.000001f;
+		self.playerCurrentX += 1.f;
+		
+		
+		self.lastTouchReady = NO;
+	}
 	
 	if (t < self.lastTouchValidUntilTime) {
 		CGRect b = self.bounds;
@@ -154,7 +211,16 @@ float remap(float value, float a, float b, float c, float d) {
 	}
 
 	
-	
+	self.playerCurrentX += self.playerVelocityX;
+	self.playerCurrentY += self.playerVelocityY;
+	self.playerVelocityX /= 0.9f;
+	self.playerVelocityY /= 0.9f;
+	if (self.playerVelocityX < 0.2f) {
+		self.playerVelocityX = 0.f;
+	}
+	if (self.playerVelocityY < 0.2f) {
+		self.playerVelocityY = 0.f;
+	}
 	
 }
 
