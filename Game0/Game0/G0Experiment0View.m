@@ -6,6 +6,7 @@
 //
 
 #import "G0Experiment0View.h"
+#import "G0LevelSlice.h"
 
 float remap(float value, float a, float b, float c, float d) {
 	return c + (d - c) * (value - a) / (b - a);
@@ -21,13 +22,16 @@ float remap(float value, float a, float b, float c, float d) {
 @property (nonatomic) CGFloat lastTouchY;
 @property (nonatomic) double lastTouchValidUntilTime;
 
+@property (nonatomic, strong) NSArray *slices;
+
 @end
 
 @implementation G0Experiment0View
 
-- (id)init {
+- (id)initWithSlices:(NSArray*)slices {
     self = [super init];
     if (self) {
+		self.slices = slices;
 		[self installGestures];
     }
     return self;
@@ -104,6 +108,27 @@ float remap(float value, float a, float b, float c, float d) {
 	}
 }
 
+- (void)drawSlices {
+	
+	CGRect bounds = self.bounds;
+	CGFloat maxy = CGRectGetMaxY(bounds);
+	CGFloat screenHeight = CGRectGetHeight(bounds);
+//	CGFloat screenWidth = CGRectGetWidth(bounds);
+	double yfactor = screenHeight / 3;
+	double xfactor = 50;
+	
+	NSInteger n = self.slices.count;
+	for (NSInteger i = 0; i<n; i++) {
+		G0LevelSlice *slice = [self.slices objectAtIndex:i];
+			
+		CGFloat height = slice.height * yfactor;
+		CGRect r = CGRectMake(i * xfactor, maxy - height, xfactor, height);
+		[[UIColor greenColor] setFill];
+		UIBezierPath *path = [UIBezierPath bezierPathWithRect:r];
+		[path fill];
+	}
+}
+
 
 - (void)drawRect:(CGRect)rect {
 	{
@@ -111,6 +136,8 @@ float remap(float value, float a, float b, float c, float d) {
 		UIBezierPath *path = [UIBezierPath bezierPathWithRect:self.bounds];
 		[path fill];
 	}
+	
+	[self drawSlices];
 
 	
 	double t = CFAbsoluteTimeGetCurrent();

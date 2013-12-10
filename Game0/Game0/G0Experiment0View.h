@@ -9,4 +9,6 @@
 
 @interface G0Experiment0View : UIView
 
+- (id)initWithSlices:(NSArray*)slices;
+
 @end
