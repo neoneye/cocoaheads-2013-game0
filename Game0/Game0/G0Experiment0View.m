@@ -29,6 +29,11 @@ float remap(float value, float a, float b, float c, float d) {
 @property (nonatomic) CGFloat playerVelocityX;
 @property (nonatomic) CGFloat playerVelocityY;
 
+@property (nonatomic) CGFloat bulletCurrentX;
+@property (nonatomic) CGFloat bulletCurrentY;
+@property (nonatomic) CGFloat bulletVelocityX;
+@property (nonatomic) CGFloat bulletVelocityY;
+
 @property (nonatomic, strong) NSArray *slices;
 @property (nonatomic) CGFloat sliceOffset;
 
@@ -43,6 +48,12 @@ float remap(float value, float a, float b, float c, float d) {
 		self.playerCurrentY = 0;
 		self.playerVelocityX = 0;
 		self.playerVelocityY = 0;
+		
+		self.bulletCurrentX = 0;
+		self.bulletCurrentY = 0;
+		self.bulletVelocityX = 0;
+		self.bulletVelocityY = 0;
+		
 		self.lastTouchReady = NO;
 		self.slices = slices;
 		self.sliceOffset = 0;
@@ -128,7 +139,7 @@ float remap(float value, float a, float b, float c, float d) {
 }
 
 - (double)yFactor {
-	return CGRectGetHeight(self.bounds) / 3;
+	return CGRectGetHeight(self.bounds) / 1.5;
 }
 
 - (void)drawSlices {
@@ -150,6 +161,79 @@ float remap(float value, float a, float b, float c, float d) {
 		[path fill];
 	}
 }
+
+-(CGPoint)playerPosition {
+	CGRect bounds = self.bounds;
+//	double yfactor = [self yFactor];
+	CGFloat midscreen = (CGRectGetWidth(bounds) / [self xFactor]) / 2.5;
+	CGFloat x = self.playerCurrentX + midscreen;
+//	CGFloat maxy = CGRectGetMaxY(bounds);
+	
+	
+	NSInteger n = self.slices.count;
+	for (NSInteger i = 0; i<n; i++) {
+		if (x < i) continue;
+		if (x >= (CGFloat)(i + 1)) continue;
+		G0LevelSlice *slice = [self.slices objectAtIndex:i];
+		
+		CGFloat height = slice.height;
+		CGFloat iadjusted = i - self.sliceOffset;
+		CGRect r = CGRectMake(iadjusted, height, 1, 1);
+		CGFloat midx = CGRectGetMidX(r);
+		
+		return CGPointMake(midx, height);
+	}
+	return CGPointZero;
+}
+
+#if 0
+-(void)drawPlayer {
+	
+	CGRect bounds = self.bounds;
+	double yfactor = [self yFactor];
+	double xfactor = [self xFactor];
+	
+	CGPoint point = [self playerPosition];
+	
+	
+	CGFloat midscreen = (CGRectGetWidth(bounds) / [self xFactor]) / 2.5;
+	CGFloat x = self.playerCurrentX + midscreen;
+	CGFloat maxy = CGRectGetMaxY(bounds);
+	
+	
+	point.x *= xfactor;
+	point.y *= yfactor;
+	
+	
+	CGRect r = CGRectMake(iadjusted * xfactor, maxy - height, xfactor, height);
+	CGRect rr = CGRectMake(midx - 20, yy - 40, 40, 40);
+	
+	[[UIColor blackColor] setFill];
+	UIBezierPath *path = [UIBezierPath bezierPathWithRect:rr];
+	[path fill];
+	
+	
+	NSInteger n = self.slices.count;
+	for (NSInteger i = 0; i<n; i++) {
+		if (x < i) continue;
+		if (x >= (CGFloat)(i + 1)) continue;
+		G0LevelSlice *slice = [self.slices objectAtIndex:i];
+		
+		CGFloat height = slice.height * yfactor;
+		CGFloat iadjusted = i - self.sliceOffset;
+		CGRect r = CGRectMake(iadjusted * xfactor, maxy - height, xfactor, height);
+		CGFloat midx = CGRectGetMidX(r);
+		
+		CGFloat yy = CGRectGetMinY(r);
+		
+		CGRect rr = CGRectMake(midx - 20, yy - 40, 40, 40);
+		
+		[[UIColor blackColor] setFill];
+		UIBezierPath *path = [UIBezierPath bezierPathWithRect:rr];
+		[path fill];
+	}
+}
+#endif
 
 -(void)drawPlayer {
 	
@@ -174,7 +258,7 @@ float remap(float value, float a, float b, float c, float d) {
 		
 		CGFloat yy = CGRectGetMinY(r);
 		
-		CGRect rr = CGRectMake(midx - 5, yy - 5, 10, 10);
+		CGRect rr = CGRectMake(midx - 20, yy - 40, 40, 40);
 		
 		[[UIColor blackColor] setFill];
 		UIBezierPath *path = [UIBezierPath bezierPathWithRect:rr];
@@ -203,9 +287,16 @@ float remap(float value, float a, float b, float c, float d) {
 		} else {
 			self.playerCurrentX -= 1.f;
 		}
-//		self.playerVelocityX = 0.000001f;
-//		self.playerCurrentX += 1.f;
 		
+		if (self.lastTouchY < 0) {
+			NSLog(@"fire");
+			[[UIColor whiteColor] setFill];
+			UIBezierPath *path = [UIBezierPath bezierPathWithRect:self.bounds];
+			[path fill];
+			
+//			self.bulletCurrentX = self.playerCurrentX;
+//			self.bulletCurrentY =
+		}
 		
 		self.lastTouchReady = NO;
 	}
@@ -221,7 +312,6 @@ float remap(float value, float a, float b, float c, float d) {
 		[path fill];
 	}
 	
-//	double sliceOffset0 = self.sliceOffset
 	double diff = self.sliceOffset - self.playerCurrentX;
 	if (diff > 5) {
 		self.sliceOffset -= 1;
@@ -250,24 +340,4 @@ float remap(float value, float a, float b, float c, float d) {
 
 
 @end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
