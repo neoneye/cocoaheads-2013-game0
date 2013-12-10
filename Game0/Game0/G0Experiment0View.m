@@ -112,7 +112,7 @@ float remap(float value, float a, float b, float c, float d) {
 //        x *= inv_aspect;
 //        y *= -1.f;
 		
-		NSLog(@"xy : %.2f %.2f", x, y);
+//		NSLog(@"xy : %.2f %.2f", x, y);
 		
 		self.lastTouchX = x;
 		self.lastTouchY = y;
@@ -156,16 +156,15 @@ float remap(float value, float a, float b, float c, float d) {
 	CGRect bounds = self.bounds;
 	double yfactor = [self yFactor];
 	double xfactor = [self xFactor];
-//	CGFloat midscreen = CGRectGetWidth(bounds) / [self xFactor] / 2;
-//	CGFloat x = self.playerCurrentX - midscreen;
-	CGFloat x = self.playerCurrentX;
+	CGFloat midscreen = (CGRectGetWidth(bounds) / [self xFactor]) / 2.5;
+	CGFloat x = self.playerCurrentX + midscreen;
 	CGFloat maxy = CGRectGetMaxY(bounds);
 	
 	
 	NSInteger n = self.slices.count;
 	for (NSInteger i = 0; i<n; i++) {
 		if (x < i) continue;
-		if (x > i) continue;
+		if (x >= (CGFloat)(i + 1)) continue;
 		G0LevelSlice *slice = [self.slices objectAtIndex:i];
 		
 		CGFloat height = slice.height * yfactor;
