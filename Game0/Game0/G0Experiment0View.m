@@ -30,6 +30,7 @@ float remap(float value, float a, float b, float c, float d) {
 @property (nonatomic) CGFloat playerVelocityY;
 
 @property (nonatomic, strong) NSArray *slices;
+@property (nonatomic) CGFloat sliceOffset;
 
 @end
 
@@ -44,6 +45,7 @@ float remap(float value, float a, float b, float c, float d) {
 		self.playerVelocityY = 0;
 		self.lastTouchReady = NO;
 		self.slices = slices;
+		self.sliceOffset = 0;
 		[self installGestures];
     }
     return self;
@@ -141,7 +143,8 @@ float remap(float value, float a, float b, float c, float d) {
 		G0LevelSlice *slice = [self.slices objectAtIndex:i];
 			
 		CGFloat height = slice.height * yfactor;
-		CGRect r = CGRectMake(i * xfactor, maxy - height, xfactor, height);
+		CGFloat iadjusted = i - self.sliceOffset;
+		CGRect r = CGRectMake(iadjusted * xfactor, maxy - height, xfactor, height);
 		[[UIColor greenColor] setFill];
 		UIBezierPath *path = [UIBezierPath bezierPathWithRect:r];
 		[path fill];
@@ -153,8 +156,11 @@ float remap(float value, float a, float b, float c, float d) {
 	CGRect bounds = self.bounds;
 	double yfactor = [self yFactor];
 	double xfactor = [self xFactor];
+//	CGFloat midscreen = CGRectGetWidth(bounds) / [self xFactor] / 2;
+//	CGFloat x = self.playerCurrentX - midscreen;
 	CGFloat x = self.playerCurrentX;
 	CGFloat maxy = CGRectGetMaxY(bounds);
+	
 	
 	NSInteger n = self.slices.count;
 	for (NSInteger i = 0; i<n; i++) {
@@ -163,7 +169,8 @@ float remap(float value, float a, float b, float c, float d) {
 		G0LevelSlice *slice = [self.slices objectAtIndex:i];
 		
 		CGFloat height = slice.height * yfactor;
-		CGRect r = CGRectMake(i * xfactor, maxy - height, xfactor, height);
+		CGFloat iadjusted = i - self.sliceOffset;
+		CGRect r = CGRectMake(iadjusted * xfactor, maxy - height, xfactor, height);
 		CGFloat midx = CGRectGetMidX(r);
 		
 		CGFloat yy = CGRectGetMinY(r);
@@ -192,8 +199,13 @@ float remap(float value, float a, float b, float c, float d) {
 	
 	if (self.lastTouchReady) {
 		
+		if (self.lastTouchX > 0) {
+			self.playerCurrentX += 1.f;
+		} else {
+			self.playerCurrentX -= 1.f;
+		}
 //		self.playerVelocityX = 0.000001f;
-		self.playerCurrentX += 1.f;
+//		self.playerCurrentX += 1.f;
 		
 		
 		self.lastTouchReady = NO;
@@ -208,6 +220,15 @@ float remap(float value, float a, float b, float c, float d) {
 		[[UIColor whiteColor] setFill];
 		UIBezierPath *path = [UIBezierPath bezierPathWithRect:r];
 		[path fill];
+	}
+	
+//	double sliceOffset0 = self.sliceOffset
+	double diff = self.sliceOffset - self.playerCurrentX;
+	if (diff > 5) {
+		self.sliceOffset -= 1;
+	}
+	if (diff < -5) {
+		self.sliceOffset += 1;
 	}
 
 	
